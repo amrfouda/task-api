@@ -199,12 +199,7 @@ database/
 **Amr Fouda**  
 📍 Cairo, Egypt  
 💻 Software Engineer — Laravel, C++, Qt, and REST API Developer  
-🌐 [LinkedIn](https://www.linkedin.com/in/amrfouda)
-
----
-
-## 🧾 License
-This project is open-source under the [MIT License](LICENSE).
+🌐 [LinkedIn](https://www.linkedin.com/in/amr-essam-23960a141)
 
 ---
 
