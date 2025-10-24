@@ -15,27 +15,39 @@ class PolicyTest extends TestCase
     {
         $author   = User::factory()->create();
         $assignee = User::factory()->create();
-        $authorToken = $this->postJson('/api/login',['email'=>$author->email,'password'=>'password'])->json('token');
-        $assigneeToken = $this->postJson('/api/login',['email'=>$assignee->email,'password'=>'password'])->json('token');
 
-        $taskId = $this->withHeader('Authorization', "Bearer $authorToken")
-            ->postJson('/api/tasks', ['title'=>'Policy Test'])
-            ->json('id');
+        // 1. Create the task without assignee (via API, acting as the Author)
+        $taskResponse = $this->actingAs($author)
+            ->postJson('/api/tasks', ['title' => 'Policy Test'])
+            ->assertCreated();
 
-        $this->withHeader('Authorization', "Bearer $authorToken")
-            ->postJson("/api/tasks/{$taskId}/assign", ['assignee_id'=>$assignee->id])
+        $taskId = $taskResponse->json('id');
+
+        // 2. Assign the task to the assignee (via API, acting as the Author)
+        $this->actingAs($author)
+            ->postJson("/api/tasks/{$taskId}/assign", ['assignee_id' => $assignee->id])
             ->assertOk();
 
+        // Fetch the task again to ensure the model used in the policy check is fresh
+        // (This is a good practice, though route model binding should handle it)
+        $task = \App\Models\Task::find($taskId);
+
+        // Sanity check to ensure users are distinct and assignment is correct
+        $this->assertNotEquals($author->id, $assignee->id, 'Author and Assignee must be distinct users.');
+        $this->assertEquals($assignee->id, $task->assignee_id, 'Task must be assigned to the assignee.');
+
         // Assignee can view
-        $this->withHeader('Authorization', "Bearer $assigneeToken")
+        $this->actingAs($assignee)
             ->getJson("/api/tasks/{$taskId}")
             ->assertOk();
 
-        // Assignee cannot update/delete
-        $this->withHeader('Authorization', "Bearer $assigneeToken")
-            ->putJson("/api/tasks/{$taskId}", ['title'=>'Nope'])->assertStatus(403);
+        // Assignee cannot update/delete (Expected 403)
+        $this->actingAs($assignee)
+            ->putJson("/api/tasks/{$taskId}", ['title' => 'Nope'])
+            ->assertStatus(403); // This should now correctly assert 403
 
-        $this->withHeader('Authorization', "Bearer $assigneeToken")
-            ->deleteJson("/api/tasks/{$taskId}")->assertStatus(403);
+        $this->actingAs($assignee)
+            ->deleteJson("/api/tasks/{$taskId}")
+            ->assertStatus(403);
     }
 }

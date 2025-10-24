@@ -35,7 +35,7 @@ class TaskController extends Controller
     public function store(TaskStoreRequest $r)
     {
         $this->authorize('create', Task::class);
-
+        \Log::info('Author in store', \App\Models\User::find($r->user()->id)->toArray());
         $task = Task::create([
             'author_id'   => $r->user()->id,
             'assignee_id' => $r->validated('assignee_id') ?? null,

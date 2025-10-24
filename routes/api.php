@@ -12,7 +12,14 @@ Route::post('/login',    [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class,'logout']);
 
-    Route::apiResource('tasks', TaskController::class);
+    // READ
+    Route::get ('tasks',        [TaskController::class, 'index']);
+    Route::get ('tasks/{task}', [TaskController::class, 'show'])->middleware('can:view,task');
+
+    // WRITE (policy-enforced)
+    Route::post  ('tasks',        [TaskController::class, 'store'])->middleware('can:create,App\Models\Task');
+    Route::put   ('tasks/{task}', [TaskController::class, 'update'])->middleware('can:update,task');
+    Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->middleware('can:delete,task');
 
     Route::post('tasks/{task}/assign',   [TaskAssignmentController::class, 'assign'])
         ->middleware('can:assign,task');

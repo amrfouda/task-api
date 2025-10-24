@@ -49,26 +49,24 @@ class TaskFlowTest extends TestCase
 
     public function test_assigned_to_me_endpoint(): void
     {
-        [$author, $token] = $this->auth();
+        // Setup Author and Assignee
+        $author   = User::factory()->create();
         $assignee = User::factory()->create();
 
-        // Create task by author
-        $taskId = $this->withHeader('Authorization', "Bearer $token")
+        // 1. Create task by author (using actingAs)
+        $taskResponse = $this->actingAs($author)
             ->postJson('/api/tasks', ['title'=>'To Assign'])
-            ->json('id');
+            ->assertCreated();
 
-        // Assign to $assignee
-        $this->withHeader('Authorization', "Bearer $token")
+        $taskId = $taskResponse->json('id');
+
+        // 2. Assign to $assignee (using actingAs)
+        $this->actingAs($author)
             ->postJson("/api/tasks/{$taskId}/assign", ['assignee_id' => $assignee->id])
             ->assertOk();
 
-        // Login as assignee
-        $assigneeToken = $this->postJson('/api/login', [
-            'email' => $assignee->email, 'password' => 'password' // default factory password is 'password'
-        ])->json('token');
-
-        // Check assigned-to-me list
-        $this->withHeader('Authorization', "Bearer $assigneeToken")
+        // 3. Check assigned-to-me list (using actingAs)
+        $this->actingAs($assignee)
             ->getJson('/api/me/assigned-tasks')
             ->assertOk()
             ->assertJsonFragment(['id' => $taskId]);
