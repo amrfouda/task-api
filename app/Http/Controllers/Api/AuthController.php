@@ -31,8 +31,28 @@ class AuthController extends Controller
         return ['token' => $r->user()->createToken('api')->plainTextToken];
     }
 
-    public function logout(Request $r) {
-        $r->user()->currentAccessToken()->delete();
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+
+        // If authenticated with a Personal Access Token (Bearer), revoke just that token
+        $token = $user?->currentAccessToken();
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+            return response()->noContent();
+        }
+
+        // Otherwise, it's likely a TransientToken (cookie-based session):
+        // 1) revoke all tokens if you also issue PATs elsewhere (optional)
+        // $user?->tokens()->delete();
+
+        // If this ever runs under a session guard, only touch session IF it exists
+        if ($request->hasSession()) {
+            auth()->guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         return response()->noContent();
     }
 }
