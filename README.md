@@ -76,9 +76,9 @@ APP_URL=http://localhost:8000
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=task_api
-DB_USERNAME=root
-DB_PASSWORD=
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
 
 # or SQLite
 # DB_CONNECTION=sqlite
