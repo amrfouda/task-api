@@ -49,14 +49,15 @@ sudo apt install composer
 sudo apt install php-xml
 composer install
 sudo apt install php-mysql
+sudo apt install mysql-server
 sudo mysql
 
 Then inside the MySQL shell:
-CREATE DATABASE laravel;
-CREATE USER 'laravel'@'127.0.0.1' IDENTIFIED BY 'secret';
-GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'127.0.0.1';
-FLUSH PRIVILEGES;
-EXIT;
+  CREATE DATABASE laravel;
+  CREATE USER 'laravel'@'127.0.0.1' IDENTIFIED BY 'secret';
+  GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'127.0.0.1';
+  FLUSH PRIVILEGES;
+  EXIT;
 ```
 
 ### 2) Environment
