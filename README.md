@@ -47,9 +47,9 @@ cd task-api
 sudo apt update
 sudo apt install composer
 sudo apt install php-xml
-composer install
 sudo apt install php-mysql
 sudo apt install mysql-server
+composer install
 sudo mysql
 
 Then inside the MySQL shell:
