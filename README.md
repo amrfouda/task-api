@@ -42,9 +42,21 @@ A clean, production‑style **REST API** for managing **tasks** and **comments**
 
 ### 1) Clone & Install
 ```bash
-git clone https://github.com/<your-username>/task-api.git
+git clone https://github.com/amrfouda/task-api.git
 cd task-api
+sudo apt update
+sudo apt install composer
+sudo apt install php-xml
 composer install
+sudo apt install php-mysql
+sudo mysql
+
+Then inside the MySQL shell:
+CREATE DATABASE laravel;
+CREATE USER 'laravel'@'127.0.0.1' IDENTIFIED BY 'secret';
+GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'127.0.0.1';
+FLUSH PRIVILEGES;
+EXIT;
 ```
 
 ### 2) Environment
