@@ -36,4 +36,12 @@ class AuthTest extends TestCase
              ->postJson('/api/logout')
              ->assertNoContent();
     }
+
+    public function test_login_validation_error(): void
+    {
+        $this->postJson('/api/login', [
+            'email' => 'bad',
+            'password' => '',
+        ])->assertStatus(422);
+    }
 }

@@ -38,3 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('me/assigned-tasks', [TaskController::class,'assignedToMe']);
 });
+
+Route::get('/test-mail', function () {
+    \Illuminate\Support\Facades\Mail::raw('Test email body', function ($m) {
+        $m->to('you@example.com')->subject('Test Email');
+    });
+    return 'sent';
+});
