@@ -267,19 +267,6 @@ php artisan test
 
 ---
 
-## 📬 Postman Collection
-
-1. Import the provided **Postman collection** (`postman/Task-API.postman_collection.json`) and **environment** (`postman/local.postman_environment.json`) if included.
-2. Set `base_url` to `http://localhost:8000`.
-3. Run in order:
-   - **Auth / Register** → **Auth / Login** → set `token` env var automatically via test script (or paste manually).
-   - Use token in **Tasks** and **Comments** requests (Authorization tab → `Bearer Token`).
-
-> If you don’t have a collection exported yet, you can generate one quickly from your existing routes with a REST client or share request examples from this README.
-
-
----
-
 ## 🗂️ Project Structure (high level)
 
 ```
